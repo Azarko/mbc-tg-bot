@@ -27,7 +27,9 @@ if TOKEN is None:
 
 # heroku settings
 APP_NAME = os.environ.get('APP_NAME')
-PORT = os.environ.get('PORT')
+PORT = os.environ.get('PORT', '8443')
+
+logging.info(f'load env: APP_NAME={APP_NAME}, PORT={PORT}')
 
 
 def start(update, context):
@@ -95,8 +97,12 @@ def main():
     if APP_NAME and PORT:
         # heroku host
         logging.info('Run on heroku')
-        updater.start_webhook(listen='0.0.0.0', port=int(PORT), url_path=TOKEN)
-        updater.bot.setWebhook(f'https://{APP_NAME}.herokuapp.com/{TOKEN}')
+        updater.start_webhook(
+            listen="0.0.0.0",
+            port=int(PORT),
+            url_path=TOKEN,
+            webhook_url=f'https://{APP_NAME}.herokuapp.com/{TOKEN}',
+        )
     else:
         # local host
         logging.info('Run on local host')

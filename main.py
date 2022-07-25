@@ -27,7 +27,7 @@ if TOKEN is None:
 
 # heroku settings
 APP_NAME = os.environ.get('APP_NAME')
-PORT = os.environ.get('PORT')
+PORT = os.environ.get('PORT', '8443')
 
 
 def start(update, context):

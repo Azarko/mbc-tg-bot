@@ -1,2 +1,2 @@
 python-telegram-bot
--e git://github.com/dmitriy-kochetkov/imaginator.git#egg=imaginator
+-e git+https://github.com/dmitriy-kochetkov/imaginator.git#egg=imaginator

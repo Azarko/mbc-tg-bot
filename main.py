@@ -1,4 +1,4 @@
-"""A small telegram bot."""
+"""Small telegram bot."""
 
 __author__ = 'Boris Polyanskiy'
 
@@ -8,12 +8,15 @@ from datetime import datetime
 import logging
 import os
 
-from imaginator.entry import create_video
+import imaginator.entry as imaginator_entry
 from telegram import ChatAction
 from telegram.ext import CommandHandler, Filters, MessageHandler, Updater
 
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO,
+)
 
 MAX_TEXT_SIZE = 150
 
@@ -29,7 +32,10 @@ PORT = os.environ.get('PORT')
 
 def start(update, context):
     """Print welcome message and list of available commands."""
-    text = "I'm an animation bot, please talk to me and I'll send you your animated text!"
+    text = (
+        'I\'m an animation bot, please talk to me and I\'ll send you your '
+        'animated text!'
+    )
     context.bot.send_message(chat_id=update.effective_chat.id, text=text)
 
 
@@ -43,10 +49,20 @@ def echo(update, context):
             text=f'Your message too long! Max message size is {MAX_TEXT_SIZE}',
         )
         return
-    name = f'{update.effective_chat.username}_{datetime.utcnow().timestamp()}.mp4'
+    name = (
+        f'{update.effective_chat.username}_{datetime.utcnow().timestamp()}.mp4'
+    )
     try:
-        context.bot.send_chat_action(chat_id=update.effective_message.chat_id, action=ChatAction.UPLOAD_VIDEO)
-        create_video(name=name, text_line=text)
+        context.bot.send_chat_action(
+            chat_id=update.effective_message.chat_id,
+            action=ChatAction.UPLOAD_VIDEO,
+        )
+        imaginator = imaginator_entry.Imaginator()
+        imaginator_entry.create_video(
+            imaginator=imaginator,
+            name=name,
+            text_line=text,
+        )
         with open(name, 'rb') as stream:
             context.bot.send_animation(
                 chat_id=update.effective_chat.id,
@@ -55,7 +71,9 @@ def echo(update, context):
             )
     except Exception as err:
         logging.error(err)
-        context.bot.send_message(chat_id=update.effective_chat.id, text='Something wrong =(')
+        context.bot.send_message(
+            chat_id=update.effective_chat.id, text='Something wrong =(',
+        )
     finally:
         with contextlib.suppress(OSError):
             os.remove(name)

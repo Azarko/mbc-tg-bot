@@ -29,6 +29,8 @@ if TOKEN is None:
 APP_NAME = os.environ.get('APP_NAME')
 PORT = os.environ.get('PORT', '8443')
 
+logging.info(f'load env: APP_NAME={APP_NAME}, PORT={PORT}')
+
 
 def start(update, context):
     """Print welcome message and list of available commands."""
